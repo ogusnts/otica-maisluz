@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Ótica Maisluz</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0A;
+    --surface: #111111;
+    --surface2: #1A1A1A;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #F0EDE8;
+    --muted: #6B6860;
+    --muted2: #9B9890;
+    --accent: #C8FF4A;
+    --blue: #4A9EFF;
+    --amber: #FFB547;
+    --teal: #4AFFCC;
+    --coral: #FF6B6B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;line-height:1.5}
+  .mono{font-family:'DM Mono',monospace}
+
+  .header{border-bottom:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,10,10,0.94);backdrop-filter:blur(12px);z-index:100}
+  .header-left{display:flex;align-items:center;gap:14px}
+  .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .brand{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .brand-sub{font-size:10px;color:var(--muted);margin-top:1px;font-weight:400}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .chip{font-family:'DM Mono',monospace;font-size:11px;padding:5px 11px;border-radius:5px;border:1px solid var(--border)}
+  .chip.live{color:var(--accent);background:rgba(200,255,74,.08);border-color:rgba(200,255,74,.2);display:flex;align-items:center;gap:6px}
+  .chip.date{color:var(--muted2)}
+
+  .main{padding:28px;max-width:1440px;margin:0 auto}
+  .sec-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+  .gap{margin-bottom:28px}
+
+  .hero{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+  .hero-card{border-radius:10px;padding:24px 26px;border:1px solid;position:relative;overflow:hidden}
+  .hero-card.primary{background:rgba(200,255,74,.05);border-color:rgba(200,255,74,.2)}
+  .hero-card.secondary{background:rgba(255,255,255,.02);border-color:var(--border)}
+  .hero-eyebrow{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+  .hero-card.primary .hero-eyebrow{color:rgba(200,255,74,.6)}
+  .hero-card.secondary .hero-eyebrow{color:var(--muted)}
+  .hero-value{font-family:'DM Mono',monospace;font-size:44px;font-weight:500;line-height:1;margin-bottom:6px}
+  .hero-card.primary .hero-value{color:var(--accent)}
+  .hero-card.secondary .hero-value{color:var(--muted2)}
+  .hero-sub{font-size:12px;color:var(--muted)}
+  .hero-waiting{font-size:11px;color:var(--muted2);margin-top:10px;padding:6px 10px;background:rgba(255,181,71,.06);border:1px solid rgba(255,181,71,.15);border-radius:5px;display:inline-flex;align-items:center;gap:7px}
+  .hero-waiting::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0;animation:pulse 1.5s ease-in-out infinite}
+
+  .metrics4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+  .mcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;position:relative;overflow:hidden}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:8px 8px 0 0}
+  .mcard.c-blue::before{background:var(--blue)}
+  .mcard.c-amber::before{background:var(--amber)}
+  .mcard.c-teal::before{background:var(--teal)}
+  .mcard.c-coral::before{background:var(--coral)}
+  .mcard-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .mcard-value{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--text);margin-bottom:4px}
+  .mcard-sub{font-size:11px;color:var(--muted2)}
+
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+  .panel-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .panel-title{font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--text)}
+  .panel-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+
+  .ftag{font-size:10px;font-weight:700;letter-spacing:.05em;padding:3px 9px;border-radius:4px;white-space:nowrap}
+  .ftag.topo{background:rgba(74,158,255,.12);color:var(--blue);border:1px solid rgba(74,158,255,.2)}
+  .ftag.meio{background:rgba(200,255,74,.1);color:var(--accent);border:1px solid rgba(200,255,74,.2)}
+
+  .sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .sdot.active{background:var(--accent);box-shadow:0 0 7px var(--accent);animation:pulse 2s ease-in-out infinite}
+  .sdot.prep{background:var(--amber);animation:pulse 1.5s ease-in-out infinite}
+  .sdot.review{background:var(--blue)}
+  .sdot.off{background:var(--muted)}
+  .spill{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;white-space:nowrap}
+  .spill.active{background:rgba(200,255,74,.1);color:var(--accent)}
+  .spill.prep{background:rgba(255,181,71,.1);color:var(--amber)}
+  .spill.review{background:rgba(74,158,255,.1);color:var(--blue)}
+  .spill.off{background:rgba(255,255,255,.04);color:var(--muted)}
+
+  .ad-table{width:100%;border-collapse:collapse}
+  .ad-table th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 20px;text-align:right;background:var(--surface2);border-bottom:1px solid var(--border)}
+  .ad-table th:first-child,.ad-table th:nth-child(2){text-align:left}
+  .ad-table td{padding:13px 20px;text-align:right;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12px}
+  .ad-table td:first-child,.ad-table td:nth-child(2){text-align:left}
+  .ad-table tr:last-child td{border-bottom:none}
+  .ad-table tr:hover td{background:var(--surface2)}
+  .ad-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+  .ad-name.dim{color:var(--muted2)}
+  .ad-sub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+  .mv{font-family:'DM Mono',monospace;color:var(--text)}
+  .mv.good{color:var(--accent)}
+  .mv.dim{color:var(--muted)}
+  .waiting-chip{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(255,181,71,.08);color:var(--amber);border:1px solid rgba(255,181,71,.15);font-family:'DM Mono',monospace;white-space:nowrap;animation:pulse 2s ease-in-out infinite}
+
+  .notice{padding:12px 16px;background:rgba(255,181,71,.05);border:1px solid rgba(255,181,71,.15);border-radius:8px;margin-bottom:28px;display:flex;align-items:flex-start;gap:12px}
+  .notice-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);margin-top:5px;flex-shrink:0;animation:pulse 1.5s ease-in-out infinite}
+  .notice-title{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:3px}
+  .notice-desc{font-size:11px;color:var(--muted2);line-height:1.6}
+
+  .footer{border-top:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+  .footer-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+
+  @media(max-width:800px){
+    .hero,.metrics4{grid-template-columns:1fr 1fr}
+    .main{padding:16px}
+    .header{padding:14px 16px}
+    .hero-value{font-size:32px}
+  }
+  @media(max-width:500px){
+    .hero,.metrics4{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="pulse-dot"></div>
+    <div>
+      <div class="brand">Ótica Maisluz</div>
+      <div class="brand-sub">Meta Ads · shineeyewear.com.br · Conta 644998934521595</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="chip date" id="chip-date">--/--/----</div>
+    <div class="chip live"><div class="pulse-dot" style="width:6px;height:6px"></div>Ao vivo</div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ① MENSAGENS -->
+  <div class="sec-label">Conversas geradas · Objetivo principal</div>
+  <div class="hero gap">
+    <div class="hero-card primary">
+      <div class="hero-eyebrow">Mensagens iniciadas</div>
+      <div class="hero-value">—</div>
+      <div class="hero-sub">Total de conversas abertas no WhatsApp</div>
+      <div class="hero-waiting">Campanhas CTM em preparação — dados em breve</div>
+    </div>
+    <div class="hero-card secondary">
+      <div class="hero-eyebrow">Custo por mensagem</div>
+      <div class="hero-value">—</div>
+      <div class="hero-sub">Custo médio por conversa iniciada</div>
+      <div class="hero-waiting">Aguardando primeiras conversões</div>
+    </div>
+  </div>
+
+  <!-- ② ALCANCE E ENTREGA -->
+  <div class="sec-label">Alcance e entrega · Últimos 30 dias</div>
+  <div class="metrics4 gap">
+    <div class="mcard c-blue">
+      <div class="mcard-label">Impressões</div>
+      <div class="mcard-value">24.318</div>
+      <div class="mcard-sub">Topo de funil ativo</div>
+    </div>
+    <div class="mcard c-amber">
+      <div class="mcard-label">Alcance</div>
+      <div class="mcard-value">21.567</div>
+      <div class="mcard-sub">Pessoas únicas</div>
+    </div>
+    <div class="mcard c-teal">
+      <div class="mcard-label">Frequência</div>
+      <div class="mcard-value">1,13</div>
+      <div class="mcard-sub">Saudável — abaixo de 3</div>
+    </div>
+    <div class="mcard c-coral">
+      <div class="mcard-label">CPM</div>
+      <div class="mcard-value">R$1,39</div>
+      <div class="mcard-sub">Melhor da conta histórica</div>
+    </div>
+  </div>
+
+  <!-- ③ TOPO DE FUNIL -->
+  <div class="sec-label">Topo de funil · Métricas por anúncio</div>
+  <div class="panel gap">
+    <div class="panel-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="ftag topo">Reconhecimento</span>
+        <span class="panel-title">[OG] [REC] Reconhecimento — Topo de Funil</span>
+      </div>
+      <span class="panel-meta">OUTCOME_AWARENESS · 4 anúncios</span>
+    </div>
+    <table class="ad-table">
+      <thead>
+        <tr>
+          <th style="width:14px"></th>
+          <th>Anúncio · Conjunto</th>
+          <th>Status</th>
+          <th>Investido</th>
+          <th>Impressões</th>
+          <th>Alcance</th>
+          <th>Frequência</th>
+          <th>CPM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="sdot active"></div></td>
+          <td>
+            <div class="ad-name">AD01 | VÍDEO | IVISION</div>
+            <div class="ad-sub">01 | GEO | 16KM | INVISION · REACH</div>
+          </td>
+          <td><span class="spill active">Ativo</span></td>
+          <td><span class="mv good">R$33,82</span></td>
+          <td><span class="mv">24.318</span></td>
+          <td><span class="mv">21.567</span></td>
+          <td><span class="mv good">1,13</span></td>
+          <td><span class="mv good">R$1,39</span></td>
+        </tr>
+        <tr>
+          <td><div class="sdot prep"></div></td>
+          <td>
+            <div class="ad-name dim">AD01 | VÍDEO | OAKLEY</div>
+            <div class="ad-sub">02 | GEO | 16KM | HIGH-TICKET · THRUPLAY</div>
+          </td>
+          <td><span class="spill prep">Preparando</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+        </tr>
+        <tr>
+          <td><div class="sdot prep"></div></td>
+          <td>
+            <div class="ad-name dim">AD02 | VÍDEO | OAKLEY</div>
+            <div class="ad-sub">02 | GEO | 16KM | HIGH-TICKET · THRUPLAY</div>
+          </td>
+          <td><span class="spill prep">Preparando</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+        </tr>
+        <tr>
+          <td><div class="sdot prep"></div></td>
+          <td>
+            <div class="ad-name dim">AD03 | VÍDEO | OAKLEY</div>
+            <div class="ad-sub">02 | GEO | 16KM | HIGH-TICKET · THRUPLAY</div>
+          </td>
+          <td><span class="spill prep">Preparando</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ④ MEIO DE FUNIL -->
+  <div class="sec-label">Meio de funil · Métricas por anúncio</div>
+  <div class="panel gap">
+    <div class="panel-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="ftag meio">CTM — Mensagens</span>
+        <span class="panel-title">[OG] [CTM] Mensagens — Meio de Funil</span>
+      </div>
+      <span class="panel-meta">OUTCOME_ENGAGEMENT · 2 anúncios</span>
+    </div>
+    <table class="ad-table">
+      <thead>
+        <tr>
+          <th style="width:14px"></th>
+          <th>Anúncio · Conjunto</th>
+          <th>Status</th>
+          <th>Investido</th>
+          <th>Mensagens</th>
+          <th>Custo/msg</th>
+          <th>Impressões</th>
+          <th>CPM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="sdot off"></div></td>
+          <td>
+            <div class="ad-name dim">AD01 | VÍDEO | Exame de Vista</div>
+            <div class="ad-sub">00 | GEO | 2KM | EXAME DE VISTA · CONVERSATIONS</div>
+          </td>
+          <td><span class="spill off">Sem anúncio</span></td>
+          <td><span class="mv dim">R$0,00</span></td>
+          <td><span class="waiting-chip">aguardando</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+        </tr>
+        <tr>
+          <td><div class="sdot review"></div></td>
+          <td>
+            <div class="ad-name dim">AD01 | VÍDEO | IVision Experiência Digital</div>
+            <div class="ad-sub">01 | GEO | 2KM | INVISION · CONVERSATIONS</div>
+          </td>
+          <td><span class="spill review">Em revisão</span></td>
+          <td><span class="mv dim">R$0,00</span></td>
+          <td><span class="waiting-chip">aguardando</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+          <td><span class="mv dim">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice gap">
+    <div class="notice-dot"></div>
+    <div>
+      <div class="notice-title">Campanhas CTM recém-ativadas</div>
+      <div class="notice-desc">Os conjuntos de mensagens estão em fase de preparação e revisão. Os dados de conversas, custo por mensagem e CPM do meio de funil aparecerão assim que o Meta iniciar a veiculação — normalmente dentro de 12–24h após aprovação dos anúncios.</div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-text">Período: últimos 30 dias · Conta 644998934521595</div>
+  <div class="footer-text" id="footer-ts">Atualizado em --/--/---- --:--</div>
+</footer>
+
+<script>
+  const now = new Date();
+  const d = now.toLocaleDateString('pt-BR');
+  const t = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('chip-date').textContent = d;
+  document.getElementById('footer-ts').textContent = 'Atualizado em ' + d + ' ' + t;
+</script>
+</body>
+</html>
